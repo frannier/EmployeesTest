@@ -1,0 +1,128 @@
+<html>
+<head>
+  <title>Empleados</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
+  <link href="css/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <script type="text/javascript" src="js/vue.js"></script>
+  <script type="text/javascript" src="js/axios.min.js"></script>
+  <script type="text/javascript" src="js/vuetify.js"></script>
+</head>
+<body>
+  <div id="principal" style="text-align:center;">
+    <v-app id="inspire">
+      <v-card class="overflow-hidden" height="100%">
+        <v-system-bar color="deep-purple darken-3"></v-system-bar>
+        <v-app-bar color="deep-purple accent-4" dark prominent >
+          <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+          <v-toolbar-title v-if="currentWindow == 'home'">Inicio</v-toolbar-title>
+          <v-toolbar-title v-if="currentWindow == 'employeesList'">Registro de empleados</v-toolbar-title>
+
+          <v-spacer></v-spacer>    
+          <v-btn icon>
+            <v-icon>mdi-magnify</v-icon>
+          </v-btn>    
+          <v-btn icon>
+            <v-icon>mdi-filter</v-icon>
+          </v-btn>    
+          <v-btn icon>
+            <v-icon>mdi-dots-vertical</v-icon>
+          </v-btn>
+        </v-app-bar>
+        <v-navigation-drawer v-model="drawer" absolute temporary>
+          <v-list nav dense>
+            <v-list-item-group v-model="group" active-class="deep-purple--text text--accent-4">
+              <v-list-item>
+                <v-list-item-title @click="currentWindow = 'home'">Inicio</v-list-item-title>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-title @click="employeesList();">Registro de empleados</v-list-item-title>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-title>Áreas y subáreas</v-list-item-title>
+              </v-list-item>
+            </v-list-item-group>
+          </v-list>
+        </v-navigation-drawer>
+        <div>
+          <v-card-text v-if="currentWindow == 'home'">
+            Aquí encontrará el desarrollo de una plataforma web para el registro de los empleados
+          </v-card-text>
+
+          <v-container v-if="currentWindow == 'employeesList'" class="grey lighten-5">
+              <!-- Vista principal con tarjetas -->
+              <v-row no-gutters height="100%" v-if="cardView">
+                <v-col v-for="item in info.data.data" :key="item" cols="12" sm="4">
+                  <v-card class="mx-auto pa-2" outlined tile>
+                    <v-toolbar :style="{ 'background-color': item.color }">
+                      <v-toolbar-title>{{item.year}}</v-toolbar-title>          
+                      <div class="flex-grow-1"></div>
+                      <v-btn @click="copySelectedColor(item); ">
+                        <span>Editar</span>
+                        <v-icon>mdi-content-copy</v-icon>
+                      </v-btn>
+                    </v-toolbar>
+                    <v-card-text>                  
+                      <span>
+                        <span>{{item.name}}</span><br>
+                        <span class="text--primary">{{item.color}}</span>
+                      </span>
+                    </v-card-text>
+                    <v-card-text class="text-right">{{item.pantone_value}}</v-card-text>
+                  </v-card>
+                </v-col>  
+                <!-- Botones de navegación -->
+                <v-bottom-navigation :value="activeBtn" color="deep-purple accent-4">
+                  <v-btn @click="reloadData(0)">
+                    <span>Anterior</span>
+                    <v-icon>mdi-arrow-left-bold-box</v-icon>
+                  </v-btn>            
+                  <v-btn @click="reloadData(1)">
+                    <span>Siguiente</span>
+                    <v-icon>mdi-arrow-right-bold-box</v-icon>
+                  </v-btn>            
+                </v-bottom-navigation>
+                <!-- Input dummy para poder copiar texto -->
+                <input type="hidden" id="selected-color">
+              </v-row>
+              <!-- Vista particular al copiar texto -->
+              <v-row no-gutters height="100%" v-if="!cardView">
+                <v-col cols="12" sm="12">
+                  <v-card class="mx-auto pa-2" outlined tile>
+                    <v-toolbar :style="{ 'background-color': selectedColor.color }">
+                      <v-toolbar-title>{{selectedColor.year}}</v-toolbar-title>          
+                      <div class="flex-grow-1"></div>
+                      <v-btn disabled="true">
+                        <span>Éxito</span>
+                        <v-icon>mdi-content-paste</v-icon>
+                      </v-btn>
+                    </v-toolbar>
+                    <v-card-text>
+                      <v-alert dense text type="success">
+                        ¡Copiado!
+                      </v-alert>  
+                    </v-card-text>
+                    <v-card-text class="text-right">{{selectedColor.pantone_value}}</v-card-text>
+                  </v-card>
+                </v-col>
+                <!-- Botones de navegación -->
+                <v-bottom-navigation value="true" color="deep-purple accent-4">
+                  <v-btn @click="cardView = true">
+                    <span>Anterior</span>
+                    <v-icon>mdi-arrow-left-bold-box</v-icon>
+                  </v-btn>            
+                </v-bottom-navigation>
+              </v-row>
+            </v-container>
+      
+
+
+        </div>
+
+      </v-card>      
+    </v-app>
+  </div>
+  <script type="text/javascript" src="src/main.js"></script>
+</body>
+</html>
